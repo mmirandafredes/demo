@@ -1,0 +1,804 @@
+<title>Indicadores Pyme</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root{
+    --cream:#FAF6F0;
+    --graphite:#2B2B2B;
+    --brown:#8B5E3C;
+    --brown-dark:#6e4a2f;
+    --coral:#FF6B4A;
+    --good:#3f8f5f;
+    --neutral:#A89F91;
+    --bad:#B5533C;
+    --card-bg:#ffffff;
+    --border:#e7ddd0;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--graphite);
+    font-family:'DM Sans', system-ui, sans-serif;
+    line-height:1.45;
+  }
+
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:28px 20px 64px;
+  }
+
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+
+  .wordmark{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:-0.01em;
+  }
+  .wordmark .miran{color:var(--graphite);}
+  .wordmark .data{color:var(--coral);}
+
+  .handle{
+    font-size:13px;
+    color:var(--neutral);
+    font-weight:500;
+  }
+
+  .kicker{
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--brown);
+    margin:28px 0 6px;
+  }
+
+  h1{
+    font-family:'Poppins', sans-serif;
+    font-weight:900;
+    font-size:clamp(28px,7vw,38px);
+    line-height:1.08;
+    margin:0 0 10px;
+    color:var(--graphite);
+  }
+
+  .sub{
+    font-size:15.5px;
+    color:#5b5148;
+    margin:0 0 30px;
+    max-width:52ch;
+  }
+
+  .card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px 20px;
+    margin-bottom:18px;
+    box-shadow:0 1px 2px rgba(43,43,43,0.04);
+  }
+
+  .card-head{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .card-num{
+    flex:0 0 auto;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:var(--brown);
+    color:#fff;
+    font-family:'Poppins',sans-serif;
+    font-weight:800;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .card-title{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:18px;
+    color:var(--graphite);
+    margin:4px 0 2px;
+  }
+
+  .card-desc{
+    font-size:13.5px;
+    color:#7a7167;
+    margin:0;
+  }
+
+  .chevron{
+    margin-left:auto;
+    font-size:20px;
+    color:var(--neutral);
+    transform:rotate(0deg);
+    transition:transform .2s ease;
+    flex:0 0 auto;
+    padding-top:6px;
+  }
+  .card.open .chevron{transform:rotate(180deg);}
+
+  .card-body{
+    display:none;
+    margin-top:18px;
+    padding-top:18px;
+    border-top:1px dashed var(--border);
+  }
+  .card.open .card-body{display:block;}
+
+  label{
+    display:block;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--graphite);
+    margin:14px 0 5px;
+  }
+  label .opt{
+    font-weight:500;
+    color:var(--neutral);
+    text-transform:none;
+    letter-spacing:0;
+  }
+  label small{
+    display:block;
+    font-weight:400;
+    color:#8a8074;
+    font-size:12.5px;
+    margin-top:2px;
+  }
+
+  input[type=number]{
+    width:100%;
+    padding:11px 12px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    font-size:16px;
+    font-family:'DM Sans', sans-serif;
+    color:var(--graphite);
+    background:#fffdfb;
+  }
+  input[type=number]:focus{
+    outline:none;
+    border-color:var(--brown);
+  }
+
+  .calc-btn{
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:var(--brown);
+    color:#fff;
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:0.01em;
+    cursor:pointer;
+  }
+  .calc-btn:active{background:var(--brown-dark);}
+
+  .result{
+    display:none;
+    margin-top:18px;
+    padding:16px;
+    border-radius:12px;
+    background:#faf7f2;
+    border:1.5px solid var(--border);
+  }
+  .result.show{display:block;}
+
+  .result-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+    padding:6px 0;
+  }
+  .result-row + .result-row{border-top:1px solid var(--border);}
+  .result-label{font-size:13.5px;color:#5b5148;}
+  .result-value{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:17px;
+    text-align:right;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 12px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:700;
+    margin-top:12px;
+  }
+  .badge .dot{width:8px;height:8px;border-radius:50%;}
+  .badge.bien{background:rgba(63,143,95,0.12);color:var(--good);}
+  .badge.bien .dot{background:var(--good);}
+  .badge.atencion{background:rgba(224,169,62,0.16);color:#96731f;}
+  .badge.atencion .dot{background:#E0A93E;}
+  .badge.riesgo{background:rgba(181,83,60,0.12);color:var(--bad);}
+  .badge.riesgo .dot{background:var(--bad);}
+  .badge.neutro{background:rgba(168,159,145,0.16);color:#7a7167;}
+  .badge.neutro .dot{background:var(--neutral);}
+
+  .result-note{
+    font-size:12.5px;
+    color:#8a8074;
+    margin-top:10px;
+    line-height:1.5;
+  }
+
+  .error-msg{
+    display:none;
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    background:rgba(181,83,60,0.08);
+    border:1.5px solid rgba(181,83,60,0.3);
+    color:var(--bad);
+    font-size:13.5px;
+  }
+  .error-msg.show{display:block;}
+
+  .lead-box{
+    margin-top:44px;
+    padding:24px 20px;
+    border-radius:18px;
+    background:var(--graphite);
+    color:var(--cream);
+  }
+  .lead-box h2{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:19px;
+    margin:0 0 6px;
+  }
+  .lead-box p{
+    font-size:13.5px;
+    color:#cfc7bb;
+    margin:0 0 16px;
+  }
+  .lead-form{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .lead-form input[type=email]{
+    flex:1 1 200px;
+    padding:12px 14px;
+    border-radius:10px;
+    border:none;
+    font-size:15px;
+    font-family:'DM Sans',sans-serif;
+  }
+  .lead-form button{
+    flex:0 0 auto;
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    background:var(--coral);
+    color:#fff;
+    font-family:'Poppins',sans-serif;
+    font-weight:800;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .lead-done{
+    display:none;
+    font-size:13.5px;
+    color:var(--cream);
+    margin-top:12px;
+    padding:10px 12px;
+    background:rgba(255,255,255,0.08);
+    border-radius:10px;
+  }
+  .lead-done.show{display:block;}
+
+  footer{
+    margin-top:40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  footer .iso{width:34px;height:34px;}
+  footer a{
+    color:var(--brown);
+    text-decoration:none;
+    font-weight:700;
+    font-size:13.5px;
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="wordmark"><span class="miran">Miran</span><span class="data">Data</span></div>
+    <div class="handle">@mirandata_</div>
+  </header>
+
+  <p class="kicker">Indicadores pyme</p>
+  <h1>Los mismos 4 números del carrusel, ahora con los tuyos.</h1>
+  <p class="sub">Cargá tus datos en cada indicador y mirá el resultado al instante. No se guarda nada hasta que vos decidís dejarlo.</p>
+
+  <!-- CARD 1: Margen de Contribución Real -->
+  <div class="card" id="card-1">
+    <div class="card-head" onclick="toggleCard(1)">
+      <div class="card-num">1</div>
+      <div style="flex:1">
+        <div class="card-title">Margen de contribución real</div>
+        <p class="card-desc">¿Cuánto te queda de cada venta después de tus costos que varían con ella?</p>
+      </div>
+      <div class="chevron">⌄</div>
+    </div>
+    <div class="card-body">
+      <label>Precio de venta actual (por unidad)<small>A cuánto vendés hoy cada unidad, producto o servicio.</small></label>
+      <input type="number" id="m1-precio" inputmode="decimal" placeholder="Ej: 15000" min="0">
+
+      <label>Costo variable actual (por unidad)<small>Lo que te cuesta hoy producir o comprar esa unidad: insumos, materia prima, comisión de venta. No incluyas alquiler ni sueldos fijos.</small></label>
+      <input type="number" id="m1-costo" inputmode="decimal" placeholder="Ej: 9000" min="0">
+
+      <label>Precio de venta hace un tiempo <span class="opt">(opcional)</span><small>Para comparar, a cuánto vendías esa misma unidad hace 6 o 12 meses.</small></label>
+      <input type="number" id="m1-precio-base" inputmode="decimal" placeholder="Opcional" min="0">
+
+      <label>Costo variable hace un tiempo <span class="opt">(opcional)</span><small>Cuánto te costaba esa misma unidad hace 6 o 12 meses.</small></label>
+      <input type="number" id="m1-costo-base" inputmode="decimal" placeholder="Opcional" min="0">
+
+      <button class="calc-btn" onclick="calcMargen()">Calcular margen</button>
+      <div class="error-msg" id="m1-error"></div>
+      <div class="result" id="m1-result"></div>
+    </div>
+  </div>
+
+  <!-- CARD 2: Flujo de Caja Operativo -->
+  <div class="card" id="card-2">
+    <div class="card-head" onclick="toggleCard(2)">
+      <div class="card-num">2</div>
+      <div style="flex:1">
+        <div class="card-title">Flujo de caja operativo</div>
+        <p class="card-desc">La plata que entró y salió de verdad este período, no lo facturado.</p>
+      </div>
+      <div class="chevron">⌄</div>
+    </div>
+    <div class="card-body">
+      <label>Cobros del período<small>Cuánta plata cobraste realmente (lo que entró a la cuenta o caja), no lo que facturaste.</small></label>
+      <input type="number" id="m2-cobros" inputmode="decimal" placeholder="Ej: 4000000" min="0">
+
+      <label>Pagos operativos del período<small>Todo lo que pagaste para operar: proveedores, sueldos, impuestos, alquiler, servicios. No incluyas cuotas de préstamos ni compra de bienes de uso.</small></label>
+      <input type="number" id="m2-pagos" inputmode="decimal" placeholder="Ej: 3600000" min="0">
+
+      <button class="calc-btn" onclick="calcFlujo()">Calcular flujo</button>
+      <div class="error-msg" id="m2-error"></div>
+      <div class="result" id="m2-result"></div>
+    </div>
+  </div>
+
+  <!-- CARD 3: Días de Cobro -->
+  <div class="card" id="card-3">
+    <div class="card-head" onclick="toggleCard(3)">
+      <div class="card-num">3</div>
+      <div style="flex:1">
+        <div class="card-title">Días de cobro</div>
+        <p class="card-desc">Cuánto tardás en cobrar lo que ya vendiste.</p>
+      </div>
+      <div class="chevron">⌄</div>
+    </div>
+    <div class="card-body">
+      <label>Saldo de cuentas por cobrar hoy<small>Cuánta plata te deben hoy tus clientes en total (facturas emitidas y no cobradas).</small></label>
+      <input type="number" id="m3-saldo" inputmode="decimal" placeholder="Ej: 2500000" min="0">
+
+      <label>Ventas totales del período<small>Cuánto facturaste en total en ese mismo período.</small></label>
+      <input type="number" id="m3-ventas" inputmode="decimal" placeholder="Ej: 5000000" min="0">
+
+      <label>Días del período<small>Cuántos días abarca ese período (30 si es mensual).</small></label>
+      <input type="number" id="m3-dias" inputmode="decimal" placeholder="30" value="30" min="1">
+
+      <label>Plazo de cobro pactado con tus clientes <span class="opt">(opcional)</span><small>A cuántos días le vendés normalmente (ej: 30, 60, 90). Sirve para comparar lo real contra lo acordado.</small></label>
+      <input type="number" id="m3-plazo" inputmode="decimal" placeholder="Opcional" min="0">
+
+      <button class="calc-btn" onclick="calcDias()">Calcular días de cobro</button>
+      <div class="error-msg" id="m3-error"></div>
+      <div class="result" id="m3-result"></div>
+    </div>
+  </div>
+
+  <!-- CARD 4: Punto de Equilibrio Dinámico -->
+  <div class="card" id="card-4">
+    <div class="card-head" onclick="toggleCard(4)">
+      <div class="card-num">4</div>
+      <div style="flex:1">
+        <div class="card-title">Punto de equilibrio dinámico</div>
+        <p class="card-desc">Cuánto necesitás vender para no perder plata, con tus costos de hoy.</p>
+      </div>
+      <div class="chevron">⌄</div>
+    </div>
+    <div class="card-body">
+      <label>Costos fijos totales del período<small>Lo que pagás todos los meses pase lo que pase con las ventas: alquiler, sueldos administrativos, seguros, servicios fijos.</small></label>
+      <input type="number" id="m4-fijos" inputmode="decimal" placeholder="Ej: 1800000" min="0">
+
+      <label>Precio de venta unitario<small>A cuánto vendés cada unidad, producto o servicio.</small></label>
+      <input type="number" id="m4-precio" inputmode="decimal" placeholder="Ej: 15000" min="0">
+
+      <label>Costo variable unitario<small>Cuánto te cuesta producir o comprar cada unidad.</small></label>
+      <input type="number" id="m4-costovar" inputmode="decimal" placeholder="Ej: 9000" min="0">
+
+      <label>Unidades vendidas reales del período <span class="opt">(opcional)</span><small>Cuántas unidades vendiste realmente, para ver qué tan lejos o cerca estás del equilibrio.</small></label>
+      <input type="number" id="m4-unidades" inputmode="decimal" placeholder="Opcional" min="0">
+
+      <button class="calc-btn" onclick="calcEquilibrio()">Calcular punto de equilibrio</button>
+      <div class="error-msg" id="m4-error"></div>
+      <div class="result" id="m4-result"></div>
+    </div>
+  </div>
+
+  <div class="lead-box">
+    <h2>¿Querés guardar estos resultados?</h2>
+    <p>Dejame tu mail y te los mando, junto con una guía corta de qué hacer con cada número. Nada se bloquea: esto es solo si te sirve tenerlo a mano.</p>
+    <form class="lead-form" id="lead-form" onsubmit="return submitLead(event)">
+      <input type="email" id="lead-email" placeholder="tu-mail@ejemplo.com" required>
+      <button type="submit">Enviármelo</button>
+    </form>
+    <div class="lead-done" id="lead-done"></div>
+  </div>
+
+  <footer>
+    <img class="iso" src="data:image/png;base64,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" alt="MiranData">
+    <a href="#" id="portfolio-link" target="_blank" rel="noopener">Ver más de MiranData →</a>
+  </footer>
+</div>
+
+<script>
+  // ---------------------------------------------------------------
+  // CONFIG — Meli puede editar estos valores sin tocar el resto del código
+  // ---------------------------------------------------------------
+  const CONFIG = {
+    // ⬇️ ESTO ES LO ÚNICO QUE TENÉS QUE PEGAR A MANO ⬇️
+    // Pegá entre las comillas la URL que te da Google cuando publicás el
+    // Web App de Apps Script (ver INSTRUCCIONES-LEADS.md, paso 4).
+    // Es una URL larga que termina en /exec, del estilo:
+    //   'https://script.google.com/macros/s/AKfycb.....largo...../exec'
+    // Mientras esté vacía, el formulario sigue funcionando como antes:
+    // abre el cliente de mail del visitante.
+    LEADS_WEBAPP_URL: '',
+
+    // Mail de respaldo: se usa solo si el envío a la planilla falla
+    // (por ejemplo, si el visitante se queda sin conexión).
+    CONTACT_EMAIL: 'lic.mirandafredes@gmail.com',
+
+    // Link a tu portfolio — reemplazalo por la URL real.
+    PORTFOLIO_URL: '#'
+  };
+
+  document.getElementById('portfolio-link').href = CONFIG.PORTFOLIO_URL;
+
+  function toggleCard(n){
+    document.getElementById('card-'+n).classList.toggle('open');
+  }
+
+  function fmtMoney(n){
+    return new Intl.NumberFormat('es-AR', {style:'currency', currency:'ARS', maximumFractionDigits:0}).format(n);
+  }
+  function fmtPct(n){
+    return (n>=0?'':'') + n.toFixed(1).replace('.', ',') + '%';
+  }
+  function fmtNum(n, decimals){
+    return new Intl.NumberFormat('es-AR', {maximumFractionDigits: decimals ?? 1}).format(n);
+  }
+  function num(id){
+    const v = document.getElementById(id).value;
+    if(v === '' || v === null) return null;
+    const n = parseFloat(v);
+    return isNaN(n) ? null : n;
+  }
+  function showError(id, msg){
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideError(id){
+    document.getElementById(id).classList.remove('show');
+  }
+  function badge(nivel, texto){
+    return '<div class="badge '+nivel+'"><span class="dot"></span>'+texto+'</div>';
+  }
+
+  // --- 1. Margen de Contribución Real ---
+  function calcMargen(){
+    hideError('m1-error');
+    const resEl = document.getElementById('m1-result');
+    resEl.classList.remove('show');
+
+    const precio = num('m1-precio');
+    const costo = num('m1-costo');
+    const precioBase = num('m1-precio-base');
+    const costoBase = num('m1-costo-base');
+
+    if(precio === null || precio <= 0){
+      showError('m1-error', 'Cargá un precio de venta mayor a cero para poder calcular el margen.');
+      return;
+    }
+    if(costo === null || costo < 0){
+      showError('m1-error', 'Cargá un costo variable (puede ser cero, pero no vacío ni negativo).');
+      return;
+    }
+
+    const margenPct = ((precio - costo) / precio) * 100;
+    let html = '';
+    html += '<div class="result-row"><span class="result-label">Margen de contribución</span><span class="result-value">'+fmtPct(margenPct)+'</span></div>';
+
+    let nivel = 'neutro', texto = '';
+    if(margenPct <= 0){
+      nivel = 'riesgo';
+      texto = 'Estás perdiendo plata en cada unidad, antes de cubrir costos fijos';
+    } else if(precioBase !== null && costoBase !== null && precioBase > 0){
+      const margenBasePct = ((precioBase - costoBase) / precioBase) * 100;
+      const variacion = margenPct - margenBasePct;
+      html += '<div class="result-row"><span class="result-label">Margen del período anterior</span><span class="result-value">'+fmtPct(margenBasePct)+'</span></div>';
+      html += '<div class="result-row"><span class="result-label">Variación</span><span class="result-value">'+fmtPct(variacion)+'</span></div>';
+      if(variacion < 0){
+        nivel = 'atencion';
+        texto = 'Tu margen se achicó: la suba de costos no se trasladó completa al precio';
+      } else {
+        nivel = 'bien';
+        texto = 'Tu margen se sostuvo o mejoró frente al período anterior';
+      }
+    } else {
+      nivel = 'bien';
+      texto = 'Estás cubriendo tu costo variable y generando margen positivo';
+    }
+
+    resEl.innerHTML = html + badge(nivel, texto) +
+      '<p class="result-note">Sin el período de comparación, este semáforo solo refleja si el margen es positivo o negativo — no hay un porcentaje "ideal" único, varía mucho según el rubro.</p>';
+    resEl.classList.add('show');
+  }
+
+  // --- 2. Flujo de Caja Operativo ---
+  function calcFlujo(){
+    hideError('m2-error');
+    const resEl = document.getElementById('m2-result');
+    resEl.classList.remove('show');
+
+    const cobros = num('m2-cobros');
+    const pagos = num('m2-pagos');
+
+    if(cobros === null || cobros < 0 || pagos === null || pagos < 0){
+      showError('m2-error', 'Cargá cobros y pagos del período (pueden ser cero, pero no negativos ni vacíos).');
+      return;
+    }
+    if(cobros === 0 && pagos === 0){
+      showError('m2-error', 'Cargá al menos un valor mayor a cero para poder calcular algo.');
+      return;
+    }
+
+    const flujo = cobros - pagos;
+    let html = '<div class="result-row"><span class="result-label">Flujo de caja operativo</span><span class="result-value">'+fmtMoney(flujo)+'</span></div>';
+
+    if(cobros > 0){
+      const flujoPct = (flujo / cobros) * 100;
+      html += '<div class="result-row"><span class="result-label">Sobre tus cobros</span><span class="result-value">'+fmtPct(flujoPct)+'</span></div>';
+    }
+
+    let nivel, texto;
+    if(flujo > 0){
+      nivel = 'bien'; texto = 'Te queda plata líquida después de pagar la operación';
+    } else if(flujo === 0){
+      nivel = 'atencion'; texto = 'Cobros y pagos empatan, sin margen de maniobra';
+    } else {
+      nivel = 'riesgo'; texto = 'Estás pagando más de lo que cobrás: se está achicando la caja';
+    }
+
+    resEl.innerHTML = html + badge(nivel, texto) +
+      (cobros === 0 ? '<p class="result-note">No registraste cobros en este período — el flujo negativo refleja solo lo pagado.</p>' : '');
+    resEl.classList.add('show');
+  }
+
+  // --- 3. Días de Cobro ---
+  function calcDias(){
+    hideError('m3-error');
+    const resEl = document.getElementById('m3-result');
+    resEl.classList.remove('show');
+
+    const saldo = num('m3-saldo');
+    const ventas = num('m3-ventas');
+    const dias = num('m3-dias') ?? 30;
+    const plazo = num('m3-plazo');
+
+    if(ventas === null || ventas <= 0){
+      showError('m3-error', 'Necesitás cargar tus ventas del período (mayores a cero) para calcular los días de cobro.');
+      return;
+    }
+    if(saldo === null || saldo < 0){
+      showError('m3-error', 'Cargá el saldo de cuentas por cobrar (puede ser cero, pero no negativo ni vacío).');
+      return;
+    }
+    if(dias <= 0){
+      showError('m3-error', 'Los días del período tienen que ser mayores a cero.');
+      return;
+    }
+
+    const diasCobro = (saldo / ventas) * dias;
+    let html = '<div class="result-row"><span class="result-label">Días de cobro</span><span class="result-value">'+fmtNum(diasCobro)+' días</span></div>';
+
+    let nivel = 'neutro', texto = 'No hay un número "ideal" en abstracto: depende del rubro y de cómo le vendés a tus clientes.';
+    if(plazo !== null && plazo > 0){
+      html += '<div class="result-row"><span class="result-label">Plazo pactado</span><span class="result-value">'+fmtNum(plazo,0)+' días</span></div>';
+      if(diasCobro <= plazo){
+        nivel = 'bien'; texto = 'Estás cobrando dentro de lo acordado con tus clientes';
+      } else if(diasCobro <= plazo * 2){
+        nivel = 'atencion'; texto = 'Estás cobrando más lento de lo pactado';
+      } else {
+        nivel = 'riesgo'; texto = 'Estás cobrando mucho más lento de lo pactado — la cadena de cobro se está estirando';
+      }
+    }
+
+    resEl.innerHTML = html + badge(nivel, texto) +
+      (plazo === null ? '<p class="result-note">Cargá tu plazo de cobro pactado para comparar contra lo real.</p>' : '');
+    resEl.classList.add('show');
+  }
+
+  // --- 4. Punto de Equilibrio Dinámico ---
+  function calcEquilibrio(){
+    hideError('m4-error');
+    const resEl = document.getElementById('m4-result');
+    resEl.classList.remove('show');
+
+    const fijos = num('m4-fijos');
+    const precio = num('m4-precio');
+    const costoVar = num('m4-costovar');
+    const unidadesReales = num('m4-unidades');
+
+    if(fijos === null || fijos < 0){
+      showError('m4-error', 'Cargá tus costos fijos del período (pueden ser cero, pero no negativos ni vacíos).');
+      return;
+    }
+    if(precio === null || precio <= 0){
+      showError('m4-error', 'Cargá un precio de venta unitario mayor a cero.');
+      return;
+    }
+    if(costoVar === null || costoVar < 0){
+      showError('m4-error', 'Cargá tu costo variable unitario (puede ser cero, pero no vacío ni negativo).');
+      return;
+    }
+    if(precio <= costoVar){
+      showError('m4-error', 'Con estos números, cada unidad que vendés no deja margen para cubrir costos fijos. Revisá el precio o el costo variable.');
+      return;
+    }
+
+    const peUnidades = fijos / (precio - costoVar);
+    const pePesos = peUnidades * precio;
+
+    let html = '';
+    html += '<div class="result-row"><span class="result-label">Punto de equilibrio</span><span class="result-value">'+fmtNum(peUnidades,1)+' unidades</span></div>';
+    html += '<div class="result-row"><span class="result-label">Equivalente en pesos</span><span class="result-value">'+fmtMoney(pePesos)+'</span></div>';
+
+    let nivel = 'neutro', texto = 'Cargá tus unidades vendidas reales para ver qué tan cerca o lejos estás.';
+    if(unidadesReales !== null && unidadesReales >= 0){
+      const margenSeg = peUnidades > 0 ? ((unidadesReales - peUnidades) / (unidadesReales || 1)) * 100 : 100;
+      const margenSegSafe = unidadesReales === 0 ? -100 : margenSeg;
+      html += '<div class="result-row"><span class="result-label">Margen de seguridad</span><span class="result-value">'+fmtPct(margenSegSafe)+'</span></div>';
+      if(margenSegSafe > 0){
+        nivel = 'bien'; texto = 'Estás vendiendo por encima de tu punto de equilibrio';
+      } else if(margenSegSafe === 0){
+        nivel = 'atencion'; texto = 'Estás exactamente en tu punto de equilibrio, ganancia cero';
+      } else {
+        nivel = 'riesgo'; texto = 'Estás vendiendo por debajo de tu punto de equilibrio: hay pérdida';
+      }
+    }
+
+    resEl.innerHTML = html + badge(nivel, texto) +
+      (fijos === 0 ? '<p class="result-note">Con costos fijos en cero, cualquier venta ya cubre todo — revisá si cargaste bien tus costos fijos.</p>' : '');
+    resEl.classList.add('show');
+  }
+
+  // --- Captura de mail (soft gate: nunca bloquea resultados, es opcional) ---
+  // Flujo: se manda el mail al Web App de Apps Script, que lo escribe en la
+  // Google Sheet sin que el visitante tenga que hacer ningún paso extra.
+  // Si ese envío falla (sin conexión, URL mal pegada), recién ahí se cae al
+  // mailto de siempre para no perder el lead.
+  async function submitLead(e){
+    e.preventDefault();
+    const email = document.getElementById('lead-email').value.trim();
+    if(!email) return false;
+
+    const resumen = buildResumen();
+    const doneEl = document.getElementById('lead-done');
+    const btn = e.target.querySelector('button[type=submit]');
+
+    // Todavía sin URL configurada: se comporta igual que antes.
+    if(!CONFIG.LEADS_WEBAPP_URL){
+      abrirMailto(email, resumen);
+      mostrarMensaje(doneEl, 'Se abrió tu mail para enviarme el pedido — completalo y mandalo para que te lo pueda mandar.');
+      return false;
+    }
+
+    const etiquetaOriginal = btn ? btn.textContent : '';
+    if(btn){ btn.disabled = true; btn.textContent = 'Enviando…'; }
+    mostrarMensaje(doneEl, 'Enviando…');
+
+    const guardado = await enviarLead(email, resumen);
+
+    if(btn){ btn.disabled = false; btn.textContent = etiquetaOriginal; }
+
+    if(guardado){
+      document.getElementById('lead-email').value = '';
+      mostrarMensaje(doneEl, '¡Listo! Ya me llegó tu mail, te mando los resultados. Podés seguir con tus números en pantalla.');
+    } else {
+      // Fallback: el envío automático no salió, abrimos el mail del visitante.
+      abrirMailto(email, resumen);
+      mostrarMensaje(doneEl, 'No pude guardarlo automáticamente, así que abrí tu cliente de mail — mandá ese mensaje y te lo hago llegar igual.');
+    }
+    return false;
+  }
+
+  // Envía el lead al Web App de Apps Script (que escribe la fila en la planilla).
+  // Va como 'text/plain' a propósito: así el navegador no dispara el "preflight"
+  // de CORS, que Apps Script no sabe contestar. El contenido sigue siendo JSON.
+  async function enviarLead(email, resumen){
+    const control = new AbortController();
+    const corte = setTimeout(() => control.abort(), 12000);
+    try {
+      const respuesta = await fetch(CONFIG.LEADS_WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          email: email,
+          resumen: resumen,
+          timestamp: new Date().toISOString(),
+          origen: location.href
+        }),
+        redirect: 'follow',
+        signal: control.signal
+      });
+      if(!respuesta.ok) return false;
+      const datos = await respuesta.json().catch(() => null);
+      return !!(datos && datos.ok);
+    } catch(err){
+      return false;
+    } finally {
+      clearTimeout(corte);
+    }
+  }
+
+  function abrirMailto(email, resumen){
+    const asunto = encodeURIComponent('Calculadora de indicadores — quiero guardar mi resultado');
+    const cuerpo = encodeURIComponent('Mail para contactarme: ' + email + '\n\n' + resumen);
+    window.location.href = 'mailto:' + CONFIG.CONTACT_EMAIL + '?subject=' + asunto + '&body=' + cuerpo;
+  }
+
+  function mostrarMensaje(el, texto){
+    el.textContent = texto;
+    el.classList.add('show');
+  }
+
+  function buildResumen(){
+    const partes = [];
+    if(document.getElementById('m1-result').classList.contains('show')) partes.push('Margen de contribución real: calculado');
+    if(document.getElementById('m2-result').classList.contains('show')) partes.push('Flujo de caja operativo: calculado');
+    if(document.getElementById('m3-result').classList.contains('show')) partes.push('Días de cobro: calculado');
+    if(document.getElementById('m4-result').classList.contains('show')) partes.push('Punto de equilibrio dinámico: calculado');
+    return partes.length ? ('Indicadores calculados: ' + partes.join(', ')) : 'Todavía no calculó ningún indicador.';
+  }
+
+  // Abrir el primer indicador por default
+  toggleCard(1);
+</script>
