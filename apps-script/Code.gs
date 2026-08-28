@@ -361,7 +361,7 @@ var PLANTILLA_HTML = `
             <table role="presentation" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="vertical-align:top; padding-right:14px;">
-                  <img src="__ISOTIPO_URL__" width="44" height="44" alt="MiranData" style="display:block; border-radius:50%;">
+                  <img src="__ISOTIPO_URL__" width="44" height="44" alt="MiranData" style="display:block;">
                 </td>
                 <td style="vertical-align:top;">
                   <p style="margin:0; font-weight:bold; color:#2B2B2B; font-size:15px;">Melisa Miranda Fredes</p>
