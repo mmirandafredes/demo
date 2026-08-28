@@ -173,3 +173,93 @@ tendrías que volver a pegarla en el HTML.
 
 Apps Script es el único que es gratis de verdad, no te ata a un hosting, y te
 deja los datos en una planilla que ya sabés usar.
+
+---
+
+## Actualizar el script para que mande el mail de bienvenida
+
+Si ya tenías la versión anterior funcionando, esto es lo que hay que hacer para
+sumarle el envío automático del mail con la guía.
+
+> ⚠️ **Importante:** el código nuevo manda mails, y eso es un permiso que
+> Google todavía no te pidió. Por eso el orden de los pasos importa: primero
+> autorizás, después publicás. Si publicás sin autorizar, los mails no salen.
+
+### 1. Pegar el código nuevo
+
+1. Abrí tu planilla → **Extensiones → Apps Script**.
+2. Borrá **todo** el contenido del archivo `Código.gs` y pegá el contenido
+   completo del `Code.gs` nuevo.
+3. Guardá con 💾 (`Ctrl+S`).
+
+### 2. Autorizar el permiso de envío de mails (y ver cómo queda el mail)
+
+1. En la barra de arriba del editor hay un **menú desplegable con nombres de
+   funciones**. Elegí **`enviarmeUnaPrueba`**.
+2. Tocá **▶ Ejecutar**.
+3. Google te va a pedir permisos otra vez, porque ahora el script también manda
+   mails. Es la misma secuencia de antes:
+   **Revisar permisos → elegí tu cuenta → Configuración avanzada →
+   Ir a Leads calculadora (no seguro) → Permitir**.
+4. A los pocos segundos te va a llegar a vos misma un mail con asunto
+   **`[PRUEBA] Acá tenés tu guía de los 4 indicadores...`**.
+   Abrilo y miralo: es exactamente lo que va a recibir cada persona.
+   Esta función **no toca la planilla**, solo manda el mail.
+
+### 3. Volver a publicar
+
+Como cambió el código, hay que publicar una versión nueva —
+**sin cambiar la URL**, así no tenés que tocar el HTML:
+
+**Implementar → Gestionar implementaciones → ícono del lápiz ✏️ →
+en "Versión" elegí *Nueva versión* → Implementar.**
+
+### 4. Probar de punta a punta
+
+Entrá a tu calculadora, dejá un mail tuyo y fijate que pasen las tres cosas:
+la fila aparece en la planilla, la **columna F dice `SI`**, y te llega el mail.
+
+---
+
+## La columna F: "Mail de bienvenida enviado"
+
+Se agrega sola la primera vez que llegue un lead con el código nuevo, y **no
+toca los nombres de columna que ya tengas puestos vos**.
+
+| Dice | Significa |
+|---|---|
+| `SI` | El mail salió bien. |
+| `NO` | El lead se guardó, pero el mail no salió. Podés escribirle a mano. |
+| (vacío) | Es un lead viejo, anterior a este cambio. |
+
+Que diga `NO` **nunca** significa que perdiste el lead: la fila se guarda
+primero y el mail se manda después, justamente para que un problema de mail no
+se lleve puesto el dato. Si querés ver *por qué* falló, entrá al editor de Apps
+Script y mirá **Ejecuciones** en el menú de la izquierda.
+
+---
+
+## Cuánto podés mandar por día (límite de cuota)
+
+Tu cuenta es una cuenta **gratuita de Gmail** (`@gmail.com`), así que el límite
+de Apps Script es:
+
+| Tipo de cuenta | Destinatarios por día |
+|---|---|
+| **Gmail gratuita (la tuya)** | **100** |
+| Google Workspace (pago, dominio propio) | 1.500 |
+
+Algunas aclaraciones que conviene tener claras:
+
+- **Es por día corrido, y se repone solo.** No es un cupo mensual que se agota.
+- **100 leads en un mismo día es muchísimo** para una calculadora de este tipo.
+  Si algún día llegaras a rozarlo, sería una buena noticia.
+- **Cambiar a `GmailApp` NO te da más cuota.** Te lo aclaro porque es una
+  confusión muy común: `MailApp` y `GmailApp` comparten exactamente el mismo
+  límite diario. La diferencia real es otra: `GmailApp` manda desde tu Gmail y
+  te deja copia en *Enviados* (y las respuestas quedan en el mismo hilo),
+  mientras que `MailApp` es solo de envío. Si algún día querés esa copia en
+  Enviados, se cambia una línea; para más cuota, la única vía es Workspace.
+- **Si te quedás sin cuota, no perdés nada.** El script se da cuenta antes de
+  intentar, guarda el lead igual, y deja la columna F en `NO`. Al día siguiente
+  vuelve a andar solo, y a esos les escribís a mano.
