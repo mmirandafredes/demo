@@ -473,13 +473,12 @@
   // ---------------------------------------------------------------
   const CONFIG = {
     // ⬇️ ESTO ES LO ÚNICO QUE TENÉS QUE PEGAR A MANO ⬇️
-    // Pegá entre las comillas la URL que te da Google cuando publicás el
-    // Web App de Apps Script (ver INSTRUCCIONES-LEADS.md, paso 4).
-    // Es una URL larga que termina en /exec, del estilo:
-    //   'https://script.google.com/macros/s/AKfycb.....largo...../exec'
-    // Mientras esté vacía, el formulario sigue funcionando como antes:
-    // abre el cliente de mail del visitante.
-    LEADS_WEBAPP_URL: '',
+    //
+    // OJO: las líneas que empiezan con // son notas para vos y el navegador
+    // las ignora por completo. NO pegues la URL en una de estas líneas.
+    // Va en la línea de abajo, la que dice LEADS_WEBAPP_URL, entre las
+    // comillas y sin borrarlas. Tiene que terminar en /exec.
+    LEADS_WEBAPP_URL: 'PEGAR_ACA_LA_URL_DEL_WEB_APP',
 
     // Mail de respaldo: se usa solo si el envío a la planilla falla
     // (por ejemplo, si el visitante se queda sin conexión).
@@ -725,7 +724,8 @@
     const btn = e.target.querySelector('button[type=submit]');
 
     // Todavía sin URL configurada: se comporta igual que antes.
-    if(!CONFIG.LEADS_WEBAPP_URL){
+    if(!urlConfigurada()){
+      console.warn('[calculadora] LEADS_WEBAPP_URL sin configurar: el lead NO se guarda en la planilla. Revisá el CONFIG del HTML.');
       abrirMailto(email, resumen);
       mostrarMensaje(doneEl, 'Se abrió tu mail para enviarme el pedido — completalo y mandalo para que te lo pueda mandar.');
       return false;
@@ -783,6 +783,12 @@
     const asunto = encodeURIComponent('Calculadora de indicadores — quiero guardar mi resultado');
     const cuerpo = encodeURIComponent('Mail para contactarme: ' + email + '\n\n' + resumen);
     window.location.href = 'mailto:' + CONFIG.CONTACT_EMAIL + '?subject=' + asunto + '&body=' + cuerpo;
+  }
+
+  // La URL cuenta como configurada solo si de verdad la pegaste.
+  function urlConfigurada(){
+    const u = (CONFIG.LEADS_WEBAPP_URL || '').trim();
+    return u.indexOf('PEGAR_ACA') === -1 && u.indexOf('http') === 0;
   }
 
   function mostrarMensaje(el, texto){
