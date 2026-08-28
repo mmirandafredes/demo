@@ -735,15 +735,20 @@
     if(btn){ btn.disabled = true; btn.textContent = 'Enviando…'; }
     mostrarMensaje(doneEl, 'Enviando…');
 
-    const guardado = await enviarLead(email, resumen);
+    const resultado = await enviarLead(email, resumen);
 
     if(btn){ btn.disabled = false; btn.textContent = etiquetaOriginal; }
 
-    if(guardado){
+    if(resultado === 'ok'){
       document.getElementById('lead-email').value = '';
       mostrarMensaje(doneEl, '¡Listo! Ya me llegó tu mail, te mando los resultados. Podés seguir con tus números en pantalla.');
+    } else if(resultado === 'demorado'){
+      // El pedido SÍ llegó al servidor, solo que la respuesta tardó demasiado.
+      // No abrimos el mailto: duplicaría el lead y confundiría al visitante.
+      document.getElementById('lead-email').value = '';
+      mostrarMensaje(doneEl, '¡Listo! Tu pedido ya salió. El mail puede tardar unos minutos en llegar — si no aparece, revisá la carpeta de spam.');
     } else {
-      // Fallback: el envío automático no salió, abrimos el mail del visitante.
+      // Acá sí falló de verdad: abrimos el mail del visitante para no perder el lead.
       abrirMailto(email, resumen);
       mostrarMensaje(doneEl, 'No pude guardarlo automáticamente, así que abrí tu cliente de mail — mandá ese mensaje y te lo hago llegar igual.');
     }
@@ -753,9 +758,13 @@
   // Envía el lead al Web App de Apps Script (que escribe la fila en la planilla).
   // Va como 'text/plain' a propósito: así el navegador no dispara el "preflight"
   // de CORS, que Apps Script no sabe contestar. El contenido sigue siendo JSON.
+  // Devuelve 'ok', 'demorado' (llegó pero no contestó a tiempo) o 'error'.
+  // El margen es amplio a propósito: el Web App guarda la fila Y manda un mail,
+  // y en un arranque en frío Apps Script puede tardar bastante en contestar.
   async function enviarLead(email, resumen){
     const control = new AbortController();
-    const corte = setTimeout(() => control.abort(), 12000);
+    let vencido = false;
+    const corte = setTimeout(() => { vencido = true; control.abort(); }, 30000);
     try {
       const respuesta = await fetch(CONFIG.LEADS_WEBAPP_URL, {
         method: 'POST',
@@ -769,11 +778,11 @@
         redirect: 'follow',
         signal: control.signal
       });
-      if(!respuesta.ok) return false;
+      if(!respuesta.ok) return 'error';
       const datos = await respuesta.json().catch(() => null);
-      return !!(datos && datos.ok);
+      return (datos && datos.ok) ? 'ok' : 'error';
     } catch(err){
-      return false;
+      return vencido ? 'demorado' : 'error';
     } finally {
       clearTimeout(corte);
     }
