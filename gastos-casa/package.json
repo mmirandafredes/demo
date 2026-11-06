@@ -1,0 +1,16 @@
+{
+  "name": "gastos-casa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PWA para registrar y repartir los gastos de la casa. Sin IA, offline, compatible con todos los navegadores.",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs 8080",
+    "test": "node --test \"tests/unit/*.test.mjs\"",
+    "test:e2e": "playwright test --trace off",
+    "iconos": "node scripts/iconos.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}
